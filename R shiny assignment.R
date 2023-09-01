@@ -3,37 +3,32 @@
 #library(ggplot2)
 
 ui <- fluidPage(
-  #Title for the page
-  titlePanel("Please input your claims Data"),
-  #Input 
-  fluidRow(
-    column(4,
-           fileInput("claims_file", "Import claims file", accept = c(".xlsx"))
+  titlePanel("Please input your claims data"),
+  
+  sidebarLayout(
+    sidebarPanel(
+      fileInput("claims_file", "Import claims file", accept = c(".xlsx")),
+      numericInput("tail_factor","Tail Factor",value=1.1),
+      width = 3
     ),
-    column(8,
-           numericInput("tail_factor","Tail Factor",value=1.1)
-    )
-  ),
-  #Output for plot title and plot
-  fluidRow(
-    column(12,
-           textOutput("plot_title")
-    )
-  ),
-  fluidRow(
-    column(12,
-           plotOutput("plot", width = "800px") 
-    )
-  ),
-  #Output for projection table title and projection table
-  fluidRow(
-    column(12,
-           textOutput("table_title")
-    )
-  ),
-  fluidRow(
-    column(12,
-           dataTableOutput("proj_table") 
+    
+    mainPanel(
+      tabsetPanel(
+        tabPanel("Cumulative Paid Claims Plot",
+                 fluidRow(
+                   column(12,
+                          plotOutput("plot",width = "auto")
+                   )
+                 )
+        ),
+        tabPanel("Cumulative Paid Claims Table",
+                 fluidRow(
+                   column(12,
+                          dataTableOutput("proj_table")
+                   )
+                 )
+        )
+      )
     )
   )
 )
@@ -162,8 +157,8 @@ server <- function(input, output,session) {
     p = ggplot()+labs(x = "Development Year", y = "Cumulative Claims ($)")
     for (i in 1:length(loss_year())){
       aes = aes_string(x = transposedPCT[,1],y = transposedPCT[,(i+1)],color=factor(loss_year()[i]))
-      p = p+geom_line(transposedPCT, mapping = aes)
-      p = p+geom_text(transposedPCT,mapping=aes,label=paste(transposedPCT[,(i+1)]),size=2.5,vjust=-0.8,show.legend = FALSE)
+      p = p+geom_smooth(aes,method="loess",se=FALSE,linewidth = 0.8)
+      p = p+geom_text(transposedPCT,mapping=aes,label=paste(transposedPCT[,(i+1)]),size=3.5,vjust=-0.8,show.legend = FALSE)
     }
     p
     
