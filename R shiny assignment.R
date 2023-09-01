@@ -100,7 +100,7 @@ server <- function(input, output,session) {
       }
     }
     #factor for last development year = tail_factor input
-    dev_factor_table[1,4] = input$tail_factor
+    dev_factor_table[1,length(loss_year())+1] = input$tail_factor
     
     #calculate projected claims in table
     projected_claims_table = cumulative_claims_table
