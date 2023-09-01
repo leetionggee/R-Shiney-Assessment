@@ -163,7 +163,7 @@ server <- function(input, output,session) {
     for (i in 1:length(loss_year())){
       aes = aes_string(x = transposedPCT[,1],y = transposedPCT[,(i+1)],color=factor(loss_year()[i]))
       p = p+geom_line(transposedPCT, mapping = aes)
-      p = p+geom_text(transposedPCT,mapping=aes,label=paste(transposedPCT[,(i+1)]),size=2.5,vjust=-0.8)
+      p = p+geom_text(transposedPCT,mapping=aes,label=paste(transposedPCT[,(i+1)]),size=2.5,vjust=-0.8,show.legend = FALSE)
     }
     p
     
